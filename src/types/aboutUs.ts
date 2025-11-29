@@ -1,0 +1,34 @@
+export interface AboutUsData {
+  title?: string;
+  intro?: string;
+  missionTitle?: string;
+  missionText?: string;
+  visionTitle?: string;
+  visionText?: string;
+  valuesTitle?: string;
+  innovationTitle?: string;
+  innovationText?: string;
+  accessibilityTitle?: string;
+  accessibilityText?: string;
+  reliabilityTitle?: string;
+  reliabilityText?: string;
+  localExpertiseTitle?: string;
+  localExpertiseText?: string;
+  whoWeServeTitle?: string;
+  whoWeServeText?: string;
+  services?: string[];
+  whyChooseTitle?: string;
+  provenTrackLabel?: string;
+  provenTrackText?: string;
+  localSupportLabel?: string;
+  localSupportText?: string;
+  complianceLabel?: string;
+  complianceText?: string;
+  scalabilityLabel?: string;
+  scalabilityText?: string;
+  getInTouchTitle?: string;
+  getInTouchText?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
