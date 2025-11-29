@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, LogIn, Users } from "lucide-react";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
   Sheet,
@@ -18,6 +18,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useTranslation } from "@/contexts/TranslationContext";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
 import ToorriiLogo from "@/assets/toorrii-logo.png";
 
 /**
@@ -29,6 +30,10 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   // Hook to get the translation function and RTL status.
   const { t, isRTL } = useTranslation();
+  // Hook to get the current route location
+  const location = useLocation();
+  // Hook to track which section is currently in viewport (only for homepage)
+  const activeSection = useScrollSpy(['partnerships', 'about', 'privacy', 'contact'], 100);
 
   /**
    * Handles the click event for the "Partnerships" navigation link.
@@ -44,6 +49,21 @@ const Header = () => {
     } else {
       window.location.href = '/#partnerships';
     }
+  };
+
+  /**
+   * Determines if a navigation link should be in the active state.
+   * For homepage sections: checks scroll position
+   * For other pages: checks current route
+   */
+  const isLinkActive = (href: string) => {
+    // For section links on homepage
+    if (href.startsWith('/#')) {
+      const sectionId = href.replace('/#', '');
+      return location.pathname === '/' && activeSection === sectionId;
+    }
+    // For page routes
+    return location.pathname === href;
   };
 
   // An array of navigation items to be displayed in the header.
@@ -81,24 +101,33 @@ const Header = () => {
 
           {/* Desktop navigation links. */}
           <nav className="hidden lg:flex items-center space-x-8 rtl:space-x-reverse">
-            {navItems.map((item, index) => (
-              <motion.div 
-                key={item.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Link
-                  to={item.href}
-                  onClick={item.onClick}
-                  className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors relative group"
+            {navItems.map((item, index) => {
+              const isActive = isLinkActive(item.href);
+              return (
+                <motion.div 
+                  key={item.name}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
                 >
-                  {item.name}
-                  {/* Underline effect on hover. */}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
-                </Link>
-              </motion.div>
-            ))}
+                  <Link
+                    to={item.href}
+                    onClick={item.onClick}
+                    className={`text-sm font-medium transition-colors relative group ${
+                      isActive 
+                        ? 'text-primary font-semibold' 
+                        : 'text-foreground/70 hover:text-foreground'
+                    }`}
+                  >
+                    {item.name}
+                    {/* Underline effect - active or on hover. */}
+                    <span className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                    }`} />
+                  </Link>
+                </motion.div>
+              );
+            })}
           </nav>
 
           {/* Animated right section of the header with language toggle and auth buttons. */}
@@ -134,21 +163,28 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <nav className="flex flex-col space-y-6 mt-8">
-                  {navItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={(e) => {
-                        if (item.onClick) {
-                          item.onClick(e);
-                        }
-                        setIsOpen(false);
-                      }}
-                      className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+                  {navItems.map((item) => {
+                    const isActive = isLinkActive(item.href);
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        onClick={(e) => {
+                          if (item.onClick) {
+                            item.onClick(e);
+                          }
+                          setIsOpen(false);
+                        }}
+                        className={`text-lg font-medium transition-colors ${
+                          isActive
+                            ? 'text-primary font-semibold'
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  })}
                   <div className="pt-6 border-t border-border space-y-4">
                     <Button variant="outline" size="lg" className="w-full justify-center gap-2 font-semibold">
                       <Users className="w-4 h-4" />
