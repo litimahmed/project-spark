@@ -33,7 +33,7 @@ const Header = () => {
   // Hook to get the current route location
   const location = useLocation();
   // Hook to track which section is currently in viewport (only for homepage)
-  const activeSection = useScrollSpy(['partnerships', 'about', 'privacy', 'contact'], 100);
+  const activeSection = useScrollSpy(['partnerships', 'about', 'privacy', 'contact'], 80);
 
   /**
    * Handles the click event for the "Partnerships" navigation link.

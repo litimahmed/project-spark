@@ -31,7 +31,7 @@ export const useScrollSpy = (sectionIds: string[], offset: number = 0): string =
           }
         });
       },
-      { rootMargin: `-${offset}px 0px 0px 0px`, threshold: 0.3 } // Adjust threshold as needed
+      { rootMargin: `-${offset}px 0px -50% 0px`, threshold: [0, 0.1, 0.25] } // Trigger when section enters viewport
     );
 
     const { current: currentObserver } = observer;
