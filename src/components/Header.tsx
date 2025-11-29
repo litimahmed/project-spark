@@ -113,17 +113,17 @@ const Header = () => {
                   <Link
                     to={item.href}
                     onClick={item.onClick}
-                    className={`text-sm font-medium transition-colors relative group ${
+                    className={`text-sm transition-colors relative group ${
                       isActive 
-                        ? 'text-primary font-semibold' 
-                        : 'text-foreground/70 hover:text-foreground'
+                        ? 'text-primary font-bold' 
+                        : 'text-foreground/70 font-medium hover:text-foreground'
                     }`}
                   >
                     {item.name}
-                    {/* Underline effect - active or on hover. */}
-                    <span className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
-                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`} />
+                    {/* Underline effect on hover only (not for active state). */}
+                    {!isActive && (
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
+                    )}
                   </Link>
                 </motion.div>
               );
@@ -175,10 +175,10 @@ const Header = () => {
                           }
                           setIsOpen(false);
                         }}
-                        className={`text-lg font-medium transition-colors ${
+                        className={`text-lg transition-colors ${
                           isActive
-                            ? 'text-primary font-semibold'
-                            : 'text-muted-foreground hover:text-foreground'
+                            ? 'text-primary font-bold'
+                            : 'text-muted-foreground font-medium hover:text-foreground'
                         }`}
                       >
                         {item.name}
